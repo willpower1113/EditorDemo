@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="100dp"
+    android:layout_height="100dp"
+    android:layout_marginBottom="10dp">
+
+    <ImageView
+        android:id="@+id/imgBit"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#333333"
+        android:padding="5dp"
+        android:scaleType="fitXY" />
+
+    <TextView
+        android:id="@+id/tvPageName"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="bottom"
+        android:background="#60000000"
+        android:gravity="center"
+        android:text="Page 1"
+        android:textColor="#ffffff" />
+</FrameLayout>
