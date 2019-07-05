@@ -1,8 +1,8 @@
-package com.willpower.editor;
+package com.willpower.editor.utils;
 
 import android.os.Environment;
 
-import com.willpower.editor.entity.Page;
+import com.willpower.editor.entity.Project;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,15 +23,15 @@ public class FileUtils {
     /*
     将页面数据写入本地
      */
-    public static void saveDataToFile(Page page) {
-        File file = new File(DATA_PATH, page.getPageID() + "txt");
+    public static void saveProjectToFile(Project project) {
+        File file = new File(DATA_PATH + "/" + project.getProjectName(), project.getProjectName() + "txt");
         if (!file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
         }
         try {
             OutputStream outputStream = new FileOutputStream(file);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-            objectOutputStream.writeObject(page);
+            objectOutputStream.writeObject(project);
             objectOutputStream.close();
             outputStream.close();
         } catch (FileNotFoundException e) {

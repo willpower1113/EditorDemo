@@ -62,6 +62,7 @@ public abstract class BaseView extends AppCompatTextView implements GestureDetec
 
     protected abstract void clearStates();
 
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -93,21 +94,6 @@ public abstract class BaseView extends AppCompatTextView implements GestureDetec
     private void requestMyLayout() {
         layout(outSide.left, outSide.top, outSide.right, outSide.bottom);
         postInvalidate();
-    }
-
-    /**
-     * 外部调用，改变位置
-     *
-     * @param l
-     * @param t
-     * @param r
-     * @param b
-     */
-    public void requestLayout(int l, int t, int r, int b) {
-        outSide = new Rect(l, t, r, b);
-        layout(l, t, r, b);
-        postInvalidate();
-       /* saveLocation();*/
     }
 
     /*
@@ -209,6 +195,16 @@ public abstract class BaseView extends AppCompatTextView implements GestureDetec
         return false;
     }
 
+    /*
+   对外提供获取坐标
+    */
+    public Rect getLocation() {
+        return outSide;
+    }
+
+    /*
+    设置监听
+     */
     public void setListener(OnCustomClickListener listener) {
         this.listener = listener;
     }

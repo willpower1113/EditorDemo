@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"
+        <activity android:name=".ui.SplashActivity"
             android:screenOrientation="landscape"
             android:launchMode="singleTask"
             android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale|layoutDirection|density">
@@ -20,12 +20,18 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.ProjectActivity"
+            android:screenOrientation="landscape">
+        </activity>
+
         <activity android:name="com.darsh.multipleimageselect.activities.AlbumSelectActivity"
             android:screenOrientation="landscape">
         </activity>
         <activity android:name="com.darsh.multipleimageselect.activities.ImageSelectActivity"
             android:screenOrientation="landscape">
         </activity>
+
+
     </application>
 
 </manifest>

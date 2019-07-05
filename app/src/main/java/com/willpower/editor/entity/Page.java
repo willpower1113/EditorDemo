@@ -1,18 +1,14 @@
 package com.willpower.editor.entity;
 
-import android.graphics.Bitmap;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Page implements Serializable {
 
-    private long pageID;
-
     private String pageName;
 
-    private Bitmap thumbnail;//缩略图
+    private String thumbnail;//背景图
 
     private List<Frame> frameList;
 
@@ -42,14 +38,6 @@ public class Page implements Serializable {
         this.frameList = frameList;
     }
 
-    public long getPageID() {
-        return pageID;
-    }
-
-    public void setPageID(long pageID) {
-        this.pageID = pageID;
-    }
-
     public String getPageName() {
         return pageName;
     }
@@ -58,21 +46,12 @@ public class Page implements Serializable {
         this.pageName = pageName;
     }
 
-    public Bitmap getThumbnail() {
+    public String getThumbnail() {
         return thumbnail;
     }
 
-    public void setThumbnail(Bitmap thumbnail) {
+    public void setThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;
     }
 
-    @Override
-    public String toString() {
-        return "Page{" +
-                "pageID=" + pageID +
-                ", pageName='" + pageName + '\'' +
-                ", thumbnail=" + thumbnail +
-                ", frameList=" + frameList +
-                '}';
-    }
 }

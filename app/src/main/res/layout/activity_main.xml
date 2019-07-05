@@ -108,7 +108,7 @@
             android:layout_height="50dp"
             android:layout_marginLeft="10dp"
             android:gravity="center"
-            android:onClick="onUpload"
+            android:onClick="onBack"
             android:text="关闭"
             android:textColor="#ffffff"
             app:qmui_backgroundColor="@color/colorAccent"

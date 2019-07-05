@@ -9,14 +9,17 @@ import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.willpower.editor.R;
+import com.willpower.editor.entity.Frame;
 import com.willpower.editor.entity.Page;
+
+import java.util.List;
 
 public class PageAdapter extends BaseQuickAdapter<Page, BaseViewHolder> {
 
     int currentPosition = 0;/*当前选中的Page*/
 
-    public PageAdapter() {
-        super(R.layout.item_page);
+    public PageAdapter(List<Page> pages) {
+        super(R.layout.item_page,pages);
     }
 
     @Override
@@ -46,7 +49,7 @@ public class PageAdapter extends BaseQuickAdapter<Page, BaseViewHolder> {
      */
     public Page getCurrentData(){
         if (mData == null || currentPosition >= mData.size())return new Page();
-        Log.e("MainActivity", "取到Page");
+        Log.e("ProjectActivity", "取到Page");
         return mData.get(currentPosition);
     }
 

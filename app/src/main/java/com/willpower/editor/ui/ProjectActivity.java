@@ -1,4 +1,4 @@
-package com.willpower.editor;
+package com.willpower.editor.ui;
 
 import android.graphics.Rect;
 import android.os.Build;
@@ -20,25 +20,31 @@ import com.jph.takephoto.app.TakePhotoActivity;
 import com.jph.takephoto.model.TResult;
 import com.jph.takephoto.uitl.TUriParse;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
+import com.willpower.editor.R;
 import com.willpower.editor.adapter.PageAdapter;
 import com.willpower.editor.entity.Frame;
 import com.willpower.editor.entity.Page;
+import com.willpower.editor.entity.Project;
+import com.willpower.editor.utils.FileUtils;
+import com.willpower.editor.utils.JSONHelper;
 import com.willpower.editor.widget.BaseView;
 import com.willpower.editor.widget.CustomButton;
 import com.willpower.editor.widget.CustomRectView;
 
 import java.io.File;
+import java.util.ArrayList;
 
-public class MainActivity extends TakePhotoActivity {
+public class ProjectActivity extends TakePhotoActivity {
     private FrameLayout boxLayout;
     private ImageView background;
     private RecyclerView lvPage;
     private BaseView tempView;
     private PageAdapter pageAdapter;
     private LinearLayout console;
-    private long tempPageId = -1;
 
     private QMUIDialog.EditTextDialogBuilder builder;
+
+    private Project project;
 
     private Page tempPage;
 
@@ -57,9 +63,8 @@ public class MainActivity extends TakePhotoActivity {
     /*
     设置当前显示页
      */
-    private void setTempPageId(long pageId) {
-        this.tempPageId = pageId;
-        if (tempPageId == -1) {
+    private void setTempPageId() {
+        if (tempPage == null) {
             console.setVisibility(View.GONE);
             boxLayout.setVisibility(View.GONE);
         } else {
@@ -69,7 +74,7 @@ public class MainActivity extends TakePhotoActivity {
     }
 
     void log(String msg) {
-        Log.e("MainActivity", msg);
+        Log.e("ProjectActivity", msg);
     }
 
     /*
@@ -95,7 +100,28 @@ public class MainActivity extends TakePhotoActivity {
                         view = CustomButton.createView(this, new Rect(0, 0, boxLayout.getWidth(), boxLayout.getHeight()));
                     }
                     view.setTag(frame);
-                    boxLayout.addView(view,params);
+                    view.setListener((isLong, v) -> {
+                        if (isLong) {
+                            new QMUIDialog.MessageDialogBuilder(ProjectActivity.this)
+                                    .setTitle("提示")
+                                    .setMessage("是否要删除选中框？")
+                                    .addAction("删除", (dialog, index) -> {
+                                        tempPage.getFrameList().remove(frame);
+                                        boxLayout.removeView(v);
+                                        dialog.dismiss();
+                                    })
+                                    .addAction("取消", (dialog, index) -> dialog.dismiss())
+                                    .show();
+                        } else {
+                            new QMUIDialog.MessageDialogBuilder(ProjectActivity.this)
+                                    .setTitle("提示")
+                                    .setMessage("点击了选中框！")
+                                    .addAction("确定", (dialog, index) -> dialog.dismiss())
+                                    .addAction("取消", (dialog, index) -> dialog.dismiss())
+                                    .show();
+                        }
+                    });
+                    boxLayout.addView(view, params);
                 }
             }
         } else {
@@ -109,9 +135,13 @@ public class MainActivity extends TakePhotoActivity {
     LinearLayoutManager linearLayoutManager;
 
     private void initPages() {
+        project = (Project) getIntent().getSerializableExtra("project");
+        if (project.getPages() == null || project.getPages().size() == 0){
+            //显示空界面
+        }
         linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         lvPage.setLayoutManager(linearLayoutManager);
-        pageAdapter = new PageAdapter();
+        pageAdapter = new PageAdapter(project.getPages());
         lvPage.setAdapter(pageAdapter);
         pageAdapter.openLoadAnimation();
         pageAdapter.setOnItemChildClickListener((adapter, view, position) -> {
@@ -171,26 +201,54 @@ public class MainActivity extends TakePhotoActivity {
         decorView.setSystemUiVisibility(uiOptions);
     }
 
+    /**
+     * 添加框
+     *
+     * @param v
+     */
     public void onAddBox(View v) {
         tempView = CustomRectView.createView(this, new Rect(0, 0, boxLayout.getWidth(), boxLayout.getHeight()));
-        Frame frame = new Frame();
-        frame.setMode(Frame.MODE_BOX);
-        frame.setFID(System.currentTimeMillis());
-        frame.setPageID(tempPage.getPageID());
-        tempView.setTag(frame);
-        boxLayout.addView(tempView, new FrameLayout.LayoutParams(100, 100));
-        tempPage.addFrame(frame);
-        pageAdapter.getCurrentData().addFrame(frame);
+        createControlView(Frame.MODE_BOX);
     }
 
+    /**
+     * 添加按钮
+     *
+     * @param v
+     */
     public void onAddButton(View v) {
         tempView = CustomButton.createView(this, new Rect(0, 0, boxLayout.getWidth(), boxLayout.getHeight()));
+        createControlView(Frame.MODE_BUTTON);
+    }
+
+
+    private void createControlView(int mode) {
         Frame frame = new Frame();
-        frame.setMode(Frame.MODE_BUTTON);
+        frame.setMode(mode);
         frame.setFID(System.currentTimeMillis());
-        frame.setPageID(tempPage.getPageID());
         tempView.setTag(frame);
-        boxLayout.addView(tempView, new FrameLayout.LayoutParams(200, 50));
+        tempView.setListener((isLong, view) -> {
+            if (isLong) {
+                new QMUIDialog.MessageDialogBuilder(ProjectActivity.this)
+                        .setTitle("提示")
+                        .setMessage("是否要删除选中框？")
+                        .addAction("删除", (dialog, index) -> {
+                            tempPage.getFrameList().remove(frame);
+                            boxLayout.removeView(view);
+                            dialog.dismiss();
+                        })
+                        .addAction("取消", (dialog, index) -> dialog.dismiss())
+                        .show();
+            } else {
+                new QMUIDialog.MessageDialogBuilder(ProjectActivity.this)
+                        .setTitle("提示")
+                        .setMessage("点击了选中框！")
+                        .addAction("确定", (dialog, index) -> dialog.dismiss())
+                        .addAction("取消", (dialog, index) -> dialog.dismiss())
+                        .show();
+            }
+        });
+        boxLayout.addView(tempView, new FrameLayout.LayoutParams(100, 100));
         tempPage.addFrame(frame);
         pageAdapter.getCurrentData().addFrame(frame);
     }
@@ -202,26 +260,22 @@ public class MainActivity extends TakePhotoActivity {
                 .setPlaceholder("请输入页面名称")
                 .addAction("确认", (dialog, index) -> {
                     tempPage = new Page();
-                    tempPage.setPageID(System.currentTimeMillis());
                     tempPage.setPageName(builder.getEditText().getText().toString());
                     pageAdapter.addData(tempPage);
                     pageAdapter.setCurrentPosition(pageAdapter.getItemCount() - 1);
-                    setTempPageId(tempPage.getPageID());
                     refreshPage();
-                    new Handler().postDelayed(() -> {
-                        linearLayoutManager.setStackFromEnd(
-                                linearLayoutManager.findLastVisibleItemPosition() - linearLayoutManager.findFirstVisibleItemPosition()
-                                < pageAdapter.getItemCount() -1
-                    );
-                },50);
-
+                    new Handler().postDelayed(() -> linearLayoutManager.setStackFromEnd(
+                            linearLayoutManager.findLastVisibleItemPosition() - linearLayoutManager.findFirstVisibleItemPosition()
+                                    < pageAdapter.getItemCount() - 1
+                    ), 50);
                     dialog.dismiss();
                 });
         builder.show();
     }
 
     public void onUpload(View v) {
-
+        Log.e("上传", JSONHelper.serializable(pageAdapter.getData()));
+        FileUtils.saveProjectToFile(project);
     }
 
     public void onBack(View v) {
@@ -253,6 +307,7 @@ public class MainActivity extends TakePhotoActivity {
             Frame frame = (Frame) boxLayout.getChildAt(i).getTag();
             pageAdapter.getCurrentData().addFrame(frame);
         }
+        project.setPages((ArrayList<Page>) pageAdapter.getData());
     }
 
     @Override
