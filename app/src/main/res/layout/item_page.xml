@@ -8,17 +8,20 @@
         android:id="@+id/imgBit"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#333333"
-        android:padding="5dp"
-        android:scaleType="fitXY" />
+        android:padding="2dp"
+        android:scaleType="centerCrop"/>
 
     <TextView
         android:id="@+id/tvPageName"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="30dp"
         android:layout_gravity="bottom"
-        android:background="#60000000"
+        android:background="#10000000"
+        android:shadowColor="#333333"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="2"
         android:gravity="center"
-        android:text="Page 1"
-        android:textColor="#ffffff" />
+        android:textColor="#ffffff"
+        android:textSize="14sp" />
 </FrameLayout>

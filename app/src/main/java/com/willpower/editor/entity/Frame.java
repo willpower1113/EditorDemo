@@ -1,6 +1,5 @@
 package com.willpower.editor.entity;
 
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 
 import java.io.Serializable;
@@ -9,109 +8,120 @@ public class Frame implements Serializable {
     public static final int MODE_BUTTON = 1;
     public static final int MODE_BOX = 2;
 
-    private long FID;
+    private long frameId;
 
-    private int mode;/*类型 button ，box*/
+    private int frameMode;/*类型 button ，box*/
 
-    private String link;/*点击跳转*/
+    private long linkPage;/*点击跳转*/
 
-    private Rect info;/*坐标，大小*/
+    private int frameAction;//用途 眼跳 = 1，回看 = 2, 默认0
 
-    private int action;//用途 眼跳，回看
+    private long pageId;/*页面ID*/
 
-    private long pageID;/*页面ID*/
+    private long projectId;/*项目ID*/
 
-    public long getFID() {
-        return FID;
+    private int loc_left;/*坐标*/
+
+    private int loc_top;
+
+    private int loc_right;
+
+    private int loc_bottom;
+
+    private long groupId;
+
+    public long getGroupId() {
+        return groupId;
     }
 
-    public void setFID(long FID) {
-        this.FID = FID;
+    public void setGroupId(long groupId) {
+        this.groupId = groupId;
+    }
+
+    public long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(long projectId) {
+        this.projectId = projectId;
+    }
+
+    public long getFrameId() {
+        return frameId;
+    }
+
+    public void setFrameId(long frameId) {
+        this.frameId = frameId;
     }
 
     public int getAction() {
-        return action;
+        return frameAction;
     }
 
     public void setAction(int action) {
-        this.action = action;
+        this.frameAction = action;
     }
 
     public int getMode() {
-        return mode;
+        return frameMode;
     }
 
     public void setMode(int mode) {
-        this.mode = mode;
+        this.frameMode = mode;
     }
 
-    public String getLink() {
-        return link;
+    public long getLinkPage() {
+        return linkPage;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public void setLinkPage(long linkPage) {
+        this.linkPage = linkPage;
     }
 
-    public Rect getInfo() {
-        return info;
+    public long getPageId() {
+        return pageId;
     }
 
-    public void setInfo(Rect info) {
-        this.info = info;
+    public void setPageId(long pageId) {
+        this.pageId = pageId;
     }
 
-    public long getPageID() {
-        return pageID;
+    public void setRect(Rect rect) {
+        this.loc_left = rect.left;
+        this.loc_top = rect.top;
+        this.loc_right = rect.right;
+        this.loc_bottom = rect.bottom;
     }
 
-    public void setPageID(long pageID) {
-        this.pageID = pageID;
+    public int getLoc_left() {
+        return loc_left;
     }
 
-    public static class Rect implements Serializable {
-        private int left;
-        private int top;
-        private int right;
-        private int bottom;
+    public void setLoc_left(int loc_left) {
+        this.loc_left = loc_left;
+    }
 
-        public Rect(android.graphics.Rect rect) {
-            this.left = rect.left;
-            this.top = rect.top;
-            this.right = rect.right;
-            this.bottom = rect.bottom;
-        }
+    public int getLoc_top() {
+        return loc_top;
+    }
 
-        public int getLeft() {
-            return left;
-        }
+    public void setLoc_top(int loc_top) {
+        this.loc_top = loc_top;
+    }
 
-        public void setLeft(int left) {
-            this.left = left;
-        }
+    public int getLoc_Right() {
+        return loc_right;
+    }
 
-        public int getTop() {
-            return top;
-        }
+    public void setLoc_Right(int right) {
+        this.loc_right = right;
+    }
 
-        public void setTop(int top) {
-            this.top = top;
-        }
+    public int getLoc_Bottom() {
+        return loc_bottom;
+    }
 
-        public int getRight() {
-            return right;
-        }
-
-        public void setRight(int right) {
-            this.right = right;
-        }
-
-        public int getBottom() {
-            return bottom;
-        }
-
-        public void setBottom(int bottom) {
-            this.bottom = bottom;
-        }
+    public void setLoc_Bottom(int bottom) {
+        this.loc_bottom = bottom;
     }
 }

@@ -14,8 +14,12 @@ public class EditorHelper {
 
     public Rect boundary;
 
+    public int leftBoundary, topBoundary;
+
     public EditorHelper(Rect boundary) {
         this.boundary = boundary;
+        leftBoundary = boundary.width() - (2 * nearBy);
+        topBoundary = boundary.height() - (2 * nearBy);
     }
 
     /**
@@ -26,31 +30,23 @@ public class EditorHelper {
      * @param r
      * @param b
      */
-    public Rect checkBoundary(int l, int t, int r, int b) {
-        if (l < 0) {
-            l = 0;
-        }
-        if (t < 0) {
-            t = 0;
-        }
-        if (r < (2 * nearBy)) {
-            r = (2 * nearBy);
-        }
-        if (b < (2 * nearBy)) {
-            b = (2 * nearBy);
-        }
+    public synchronized Rect checkBoundary(int l, int t, int r, int b) {
         if (boundary != null) {
-            if (l > (boundary.width() - (2 * nearBy))) {
-                l = (boundary.width() - (2 * nearBy));
-            }
-            if (t > (boundary.height() - (2 * nearBy))) {
-                t = (boundary.height() - (2 * nearBy));
-            }
             if (r > boundary.width()) {
+                l -= (r - boundary.width());
                 r = boundary.width();
             }
             if (b > boundary.height()) {
+                t -= (b - boundary.height());
                 b = boundary.height();
+            }
+            if (l < 0) {
+                r -= l;
+                l = 0;
+            }
+            if (t < 0) {
+                b -= t;
+                t = 0;
             }
         }
         if (l > (r - (2 * nearBy))) {
@@ -59,6 +55,7 @@ public class EditorHelper {
         if (t > (b - (2 * nearBy))) {
             t = b - (2 * nearBy);
         }
+//        return new Rect(Math.round(l), Math.round(t), Math.round(r), Math.round(b));
         return new Rect(l, t, r, b);
     }
 

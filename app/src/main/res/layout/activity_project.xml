@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="20dp"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/lvPage"
+            android:layout_width="100dp"
+            android:layout_height="440dp" />
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/selector_add_click"
+            android:onClick="onAddPageClick"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvProjectName"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:text="APP"
+            android:textColor="#333333"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/icon_edit"
+            android:padding="10dp"
+            android:onClick="onEditProjectNameClick"/>
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="1344px"
+        android:layout_height="756px"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp">
+
+        <ImageView
+            android:id="@+id/background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter" />
+
+        <FrameLayout
+            android:id="@+id/boxLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/shape_box"
+            android:visibility="invisible" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/console"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="45dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:textSize="12sp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/selector_btn_normal"
+            android:gravity="center"
+            android:onClick="onCreateBoxClick"
+            android:text="添加框"
+            android:textColor="#ffffff" />
+
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:textSize="12sp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/selector_btn_normal"
+            android:gravity="center"
+            android:onClick="onCreateButtonClick"
+            android:text="添加按钮"
+            android:textColor="#ffffff" />
+
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:textSize="12sp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/selector_btn_normal"
+            android:gravity="center"
+            android:onClick="onChoosePictureClick"
+            android:text="设置背景"
+            android:textColor="#ffffff" />
+
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:textSize="12sp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/selector_btn_normal"
+            android:gravity="center"
+            android:onClick="onSavePageClick"
+            android:text="保存"
+            android:textColor="#ffffff" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginRight="8dp"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btnDelete"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:textSize="12sp"
+            android:background="@drawable/selector_btn_tips"
+            android:onClick="onDeleteClick"
+            android:text="删除"
+            android:visibility="gone"
+            android:textColor="#ffffff"/>
+
+        <Button
+            android:id="@+id/btnGroup"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:textSize="12sp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/selector_btn_tips"
+            android:onClick="onGroupClick"
+            android:text="创建组"
+            android:visibility="gone"
+            android:textColor="#ffffff"/>
+
+        <ToggleButton
+            android:id="@+id/switchChoose"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:textSize="12sp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/selector_btn_tips"
+            android:textOff="编辑"
+            android:textOn="隐藏"
+            android:textColor="#ffffff"/>
+
+        <ToggleButton
+            android:id="@+id/switchInfo"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:textSize="12sp"
+            android:layout_marginTop="10dp"
+            android:textOn="关闭详情"
+            android:textOff="显示详情"
+            android:textColor="#ffffff"
+            android:background="@drawable/selector_btn_tips"/>
+
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:textSize="12sp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/selector_btn_warn"
+            android:onClick="onCloseProjectClick"
+            android:text="退出"
+            android:textColor="#ffffff"/>
+    </LinearLayout>
+</FrameLayout>

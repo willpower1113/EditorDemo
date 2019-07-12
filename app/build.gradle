@@ -4,10 +4,18 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.willpower.editor"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+    dexOptions {
+        javaMaxHeapSize '4g'
     }
     buildTypes {
         release {
@@ -36,5 +44,12 @@ dependencies {
     implementation 'com.jph.takephoto:takephoto_library:4.0.2'
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.28'
+    //JLog
+    implementation(name: 'JLog', ext: 'aar')
+    // retrofit
     implementation files('libs/gson-2.8.2.jar')
+    implementation files('libs/retrofit-2.4.0.jar')
+    implementation files('libs/converter-scalars-2.4.0.jar')
+    implementation 'com.android.support:multidex:1.0.1'
+    implementation 'com.github.ihsanbal:LoggingInterceptor:3.0.0'
 }

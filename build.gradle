@@ -19,6 +19,9 @@ allprojects {
         jcenter()
         maven { url 'https://jitpack.io' }
         maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+        flatDir {
+            dirs 'libs'
+        }
     }
 }
 

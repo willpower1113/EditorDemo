@@ -6,15 +6,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.Gravity;
-import android.view.MotionEvent;
-import android.widget.FrameLayout;
-import android.widget.Toast;
 
-public class CustomButton extends BaseView{
+public class CustomButton extends BaseView {
 
-    private static final int boxColor = Color.GRAY;
+    private static final int boxColor = Color.WHITE;
 
     private CustomButton(Context context, Rect boundary) {
         super(context);
@@ -29,11 +24,11 @@ public class CustomButton extends BaseView{
     @Override
     public void setPaint() {
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setStrokeWidth(1);
+        paint.setStrokeWidth(2);
         paint.setColor(boxColor);
         paint.setStyle(Paint.Style.STROKE);
         setText("Button");
-        setGravity(Gravity.CENTER);
+        setBackgroundColor(Color.parseColor("#20000000"));
     }
 
     @Override

@@ -8,7 +8,7 @@ import android.graphics.Rect;
 import android.util.Log;
 
 public class CustomRectView extends BaseView {
-    private static final int boxColor = Color.DKGRAY;
+    private static final int boxColor = Color.WHITE;
 
     private CustomRectView(Context context, Rect boundary) {
         super(context);
@@ -23,9 +23,11 @@ public class CustomRectView extends BaseView {
     @Override
     protected void setPaint() {
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setStrokeWidth(1);
+        paint.setStrokeWidth(2);
         paint.setColor(boxColor);
         paint.setStyle(Paint.Style.FILL);
+        setTextSize(10);
+        setBackgroundColor(Color.parseColor("#20000000"));
     }
 
     @Override

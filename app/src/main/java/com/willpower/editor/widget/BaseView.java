@@ -1,18 +1,23 @@
 package com.willpower.editor.widget;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
+import com.willpower.editor.R;
 import com.willpower.editor.entity.Frame;
+import com.willpower.editor.utils.ValidUtils;
+import com.willpower.log.Timber;
 
 public abstract class BaseView extends AppCompatTextView implements GestureDetector.OnGestureListener {
     /*
@@ -24,18 +29,28 @@ public abstract class BaseView extends AppCompatTextView implements GestureDetec
     public static final int BOTTOM_CHANGE = 4;
     public static final int NONE = -1;
 
+    protected static final int chooseSize = 40;
+
+    protected OnChangeListener changeListener;
+
     protected Paint paint;
 
-    protected float downX;
-    protected float downY;
+    protected int downX;
+    protected int downY;
 
     protected Rect outSide;
 
     protected EditorHelper helper;
 
-    protected float moveX = 0, moveY = 0;
+    protected int moveX = 0, moveY = 0;
 
     private int[] actions;/*横向，纵向拉伸状态*/
+
+    private boolean isInfo = false;
+
+    private boolean isChooseMode = false;
+
+    private boolean isChoosed = false;
 
     private GestureDetector detector;
 
@@ -53,6 +68,9 @@ public abstract class BaseView extends AppCompatTextView implements GestureDetec
         super(context, attrs, defStyleAttr);
         detector = new GestureDetector(this);
         actions = new int[2];
+        setGravity(Gravity.CENTER);
+        setTextColor(Color.WHITE);
+        setShadowLayer(4,2,2,Color.BLACK);
         setPaint();
     }
 
@@ -68,13 +86,24 @@ public abstract class BaseView extends AppCompatTextView implements GestureDetec
         super.onDraw(canvas);
         outSide = new Rect(getLeft(), getTop(), getRight(), getBottom());
         drawBox(canvas);
+        if (isChooseMode()) {
+            if (isChoosed) {
+                canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.icon_choose_choosed),
+                        null, new RectF(20, 20,
+                                20 + chooseSize, 20 + chooseSize), paint);
+            } else {
+                canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.icon_choose_normal),
+                        null, new RectF(20, 20,
+                                20 + chooseSize, 20 + chooseSize), paint);
+            }
+        }
     }
+
 
     /*
     保存位置
      */
     protected void saveLocation() {
-        Log.e("Custom->保存位置", "left: " + outSide.left + "top:" + outSide.top + "right:" + outSide.right + "bottom:" + outSide.bottom);
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) getLayoutParams();
         params.width = outSide.right - outSide.left;
         params.height = outSide.bottom - outSide.top;
@@ -83,7 +112,7 @@ public abstract class BaseView extends AppCompatTextView implements GestureDetec
         setLayoutParams(params);
         try {
             Frame frame = (Frame) getTag();
-            frame.setInfo(new Frame.Rect(outSide));
+            frame.setRect(outSide);
         } catch (Exception e) {
         }
     }
@@ -99,23 +128,38 @@ public abstract class BaseView extends AppCompatTextView implements GestureDetec
     /*
    拖动
     */
-    private void drag(float moveX, float moveY) {
-        outSide = helper.checkBoundary((int) (outSide.left + moveX), (int) (outSide.top + moveY), (int) (outSide.right + moveX), (int) (outSide.bottom + moveY));
+    private void drag(int mX, int mY) {
+        final int x = mX - this.moveX;
+        final int y = mY - this.moveY;
+
+        this.moveX = mX;
+        this.moveY = mY;
+        Timber.e("移动：moveX：" + moveX + "moveY：" + moveY);
+        outSide = helper.checkBoundary(outSide.left + x, outSide.top + y, outSide.right + x, outSide.bottom + y);
         requestMyLayout();
     }
 
     /*
     改变大小
      */
-    private void change(float mX, float mY) {
-        final float x = mX - this.moveX;
-        final float y = mY - this.moveY;
+    private void change(int mX, int mY) {
+        final int x = mX - this.moveX;
+        final int y = mY - this.moveY;
 
         this.moveX = mX;
         this.moveY = mY;
 
-        outSide = helper.checkBoundary((int) (actions[0] == LEFT_CHANGE ? (outSide.left + x) : outSide.left), (int) (actions[1] == TOP_CHANGE ? (outSide.top + y) : outSide.top)
-                , (int) (actions[0] == RIGHT_CHANGE ? (outSide.right + x) : outSide.right), (int) (actions[1] == BOTTOM_CHANGE ? (outSide.bottom + y) : outSide.bottom));
+        if (actions[0] == LEFT_CHANGE) {
+            outSide.left += x;
+        } else if (actions[0] == RIGHT_CHANGE) {
+            outSide.right += x;
+        }
+        if (actions[1] == TOP_CHANGE) {
+            outSide.top += y;
+        } else if (actions[1] == BOTTOM_CHANGE) {
+            outSide.bottom += y;
+        }
+        outSide = helper.checkBoundary(outSide.left, outSide.top, outSide.right, outSide.bottom);
         requestMyLayout();
     }
 
@@ -131,8 +175,8 @@ public abstract class BaseView extends AppCompatTextView implements GestureDetec
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                this.downX = event.getX();
-                this.downY = event.getY();
+                this.downX = (int) event.getRawX();
+                this.downY = (int) event.getRawY();
                 /*检测触控区域是否在边界*/
                 actions = helper.checkTouchBoundary(event.getX(), event.getY(), outSide, actions);
                 if (hasAction()) {
@@ -141,8 +185,8 @@ public abstract class BaseView extends AppCompatTextView implements GestureDetec
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
-                float dx = event.getX() - downX;
-                float dy = event.getY() - downY;
+                int dx = (int) (event.getRawX() - this.downX);
+                int dy = (int) (event.getRawY() - this.downY);
                 if (hasAction()) {
                     change(dx, dy);
                 } else {
@@ -196,16 +240,56 @@ public abstract class BaseView extends AppCompatTextView implements GestureDetec
     }
 
     /*
-   对外提供获取坐标
-    */
-    public Rect getLocation() {
-        return outSide;
-    }
-
-    /*
     设置监听
      */
     public void setListener(OnCustomClickListener listener) {
         this.listener = listener;
+    }
+
+    public boolean isInfo() {
+        return isInfo;
+    }
+
+    @Override
+    public void setTag(Object tag) {
+        super.setTag(tag);
+        Frame frame = (Frame) getTag();
+        if (frame != null && isInfo) {
+            setText(ValidUtils.getFrameText(frame, isInfo));
+        }
+    }
+
+    public void refreshText() {
+        setText(ValidUtils.getFrameText((Frame) getTag(), isInfo));
+    }
+
+    public void setInfo(boolean isInfo) {
+        this.isInfo = isInfo;
+    }
+
+    public boolean isChooseMode() {
+        return isChooseMode;
+    }
+
+    public void setChooseMode(boolean chooseMode) {
+        isChooseMode = chooseMode;
+        postInvalidate();
+    }
+
+    public boolean isChoosed() {
+        return isChoosed;
+    }
+
+    public void setChoosed(boolean choosed) {
+        isChoosed = choosed;
+        postInvalidate();
+    }
+
+    public interface OnChangeListener{
+        void onChange();
+    }
+
+    public void setChangeListener(OnChangeListener changeListener) {
+        this.changeListener = changeListener;
     }
 }

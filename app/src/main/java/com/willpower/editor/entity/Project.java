@@ -2,14 +2,21 @@ package com.willpower.editor.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
-public class Project implements Serializable{
+public class Project implements Serializable {
 
+    private long projectId;
     private String projectName;
+    private List<Page> pages;
 
-    private ArrayList<Page> pages;
+    public long getProjectId() {
+        return projectId;
+    }
 
-    private long created;
+    public void setProjectId(long projectId) {
+        this.projectId = projectId;
+    }
 
     public String getProjectName() {
         return projectName;
@@ -19,19 +26,12 @@ public class Project implements Serializable{
         this.projectName = projectName;
     }
 
-    public ArrayList<Page> getPages() {
+    public List<Page> getPages() {
         return pages;
     }
 
-    public void setPages(ArrayList<Page> pages) {
+    public void setPages(List<Page> pages) {
         this.pages = pages;
     }
 
-    public long getCreated() {
-        return created;
-    }
-
-    public void setCreated(long created) {
-        this.created = created;
-    }
 }
