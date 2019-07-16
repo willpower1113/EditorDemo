@@ -70,7 +70,7 @@ public abstract class BaseView extends AppCompatTextView implements GestureDetec
         actions = new int[2];
         setGravity(Gravity.CENTER);
         setTextColor(Color.WHITE);
-        setShadowLayer(4,2,2,Color.BLACK);
+        setShadowLayer(4, 2, 2, Color.BLACK);
         setPaint();
     }
 
@@ -121,6 +121,9 @@ public abstract class BaseView extends AppCompatTextView implements GestureDetec
     更新并显示
      */
     private void requestMyLayout() {
+        if (this.changeListener != null) {
+            this.changeListener.onChange();
+        }
         layout(outSide.left, outSide.top, outSide.right, outSide.bottom);
         postInvalidate();
     }
@@ -285,11 +288,14 @@ public abstract class BaseView extends AppCompatTextView implements GestureDetec
         postInvalidate();
     }
 
-    public interface OnChangeListener{
+    public interface OnChangeListener {
         void onChange();
     }
 
     public void setChangeListener(OnChangeListener changeListener) {
         this.changeListener = changeListener;
+        if (this.changeListener != null) {
+            this.changeListener.onChange();
+        }
     }
 }

@@ -33,6 +33,7 @@ public class PageAdapter extends BaseQuickAdapter<Page, BaseViewHolder> {
         helper.setText(R.id.tvPageName, item.getPageName());
         helper.addOnClickListener(R.id.imgBit)
                 .addOnClickListener(R.id.tvPageName);
+        helper.addOnLongClickListener(R.id.imgBit);
         if (currentPosition == count) {
             helper.getView(R.id.imgBit).setBackground(mContext.getResources().getDrawable(R.drawable.shape_page_selected));
         } else {

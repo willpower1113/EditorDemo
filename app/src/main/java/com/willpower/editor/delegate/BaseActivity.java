@@ -1,5 +1,6 @@
 package com.willpower.editor.delegate;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.arch.lifecycle.LifecycleOwner;
@@ -11,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 import com.willpower.editor.widget.DialogHelper;
+import com.willpower.log.Timber;
 
 import static android.os.Build.VERSION_CODES.M;
 
@@ -138,5 +141,23 @@ public abstract class BaseActivity<P extends IPresenter> extends AppCompatActivi
             mPresenter.onDestroy();
         }
         super.onDestroy();
+    }
+
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        Timber.e("KeyCode:" + event.getKeyCode());
+        switch (event.getKeyCode()) {
+            case KeyEvent.KEYCODE_ENTER:
+                Timber.e("KEYCODE_ENTER");
+                break;
+            case KeyEvent.KEYCODE_ALT_LEFT:
+                Timber.e("KEYCODE_ALT_LEFT");
+                break;
+            case KeyEvent.KEYCODE_ALT_RIGHT:
+                Timber.e("KEYCODE_ALT_LEFT");
+                break;
+        }
+        return super.dispatchKeyEvent(event);
     }
 }

@@ -1,4 +1,4 @@
-package com.willpower.editor.ui;
+package com.willpower.editor.ui.splash;
 
 import android.Manifest;
 import android.content.Intent;
@@ -11,32 +11,21 @@ import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
-import com.google.gson.reflect.TypeToken;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
-import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.willpower.editor.R;
 import com.willpower.editor.adapter.ProjectAdapter;
 import com.willpower.editor.delegate.BaseActivity;
-import com.willpower.editor.delegate.IPresenter;
 import com.willpower.editor.entity.Project;
-import com.willpower.editor.http.GsonHelper;
-import com.willpower.editor.http.RequestHelper;
-import com.willpower.editor.http.RetrofitManager;
-import com.willpower.editor.http.StringCallback;
 import com.willpower.editor.ui.editor.ProjectActivity;
-import com.willpower.editor.widget.DialogHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 /**
  * 启动页
  */
-public class SplashActivity extends BaseActivity {
+public class SplashActivity extends BaseActivity<SplashPresenter> {
 
     RecyclerView rvProjectList;
 
@@ -44,16 +33,14 @@ public class SplashActivity extends BaseActivity {
 
     Button linkRefresh;
 
-    Project project;
-
     QMUIDialog.EditTextDialogBuilder builder;
 
     List<Project> projects;
 
 
     @Override
-    public IPresenter initPresenter() {
-        return null;
+    public SplashPresenter initPresenter() {
+        return new SplashPresenter(this);
     }
 
     @Override
@@ -71,9 +58,9 @@ public class SplashActivity extends BaseActivity {
         linkRefresh = findViewById(R.id.linkRefresh);
         linkRefresh.setOnClickListener(v -> {
             linkRefresh.setVisibility(View.GONE);
-            getProjectList();
+            mPresenter.getProjectList();
         });
-        getProjectList();
+        mPresenter.getProjectList();
     }
 
     /**
@@ -87,12 +74,32 @@ public class SplashActivity extends BaseActivity {
         rvProjectList.addOnItemTouchListener(new OnItemChildClickListener() {
             @Override
             public void onSimpleItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-                project = projectAdapter.getItem(position);
-                startActivity(new Intent(SplashActivity.this, ProjectActivity.class).putExtra("project", project));
-                finish();
+                switch (view.getId()) {
+                    case R.id.tvProjectName://选中项目
+                        startActivity(new Intent(SplashActivity.this, ProjectActivity.class)
+                                .putExtra("project", projectAdapter.getItem(position)));
+                        finish();
+                        break;
+                    case R.id.imgDelete://删除项目
+                        showDeleteProjectDialog(position);
+                        break;
+                }
             }
         });
     }
+
+    private void showDeleteProjectDialog(int index){
+        dialog = new QMUIDialog.MessageDialogBuilder(context)
+                .setTitle("警告")
+                .setMessage("确认删除项目 <" + projectAdapter.getData().get(index).getProjectName() + "> ?")
+                .addAction(0, "删除", QMUIDialogAction.ACTION_PROP_NEGATIVE, (dialog, index1) -> {
+                    mPresenter.deleteProject(index, projectAdapter.getData().get(index).getProjectId());
+                    dialog.dismiss();
+                })
+                .addAction("取消", (dialog, index12) -> dialog.dismiss())
+                .show();
+    }
+
 
     public void onAddProject(View v) {
         builder = new QMUIDialog.EditTextDialogBuilder(this)
@@ -104,60 +111,36 @@ public class SplashActivity extends BaseActivity {
                         Toast.makeText(SplashActivity.this, "项目名称不能为空", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    project = new Project();
+                    Project project = new Project();
                     project.setPages(new ArrayList<>());
                     project.setProjectId(System.currentTimeMillis());
                     project.setProjectName(pName);
                     dialog.dismiss();
-                    createProject();
+                    mPresenter.createProject(project);
                 })
                 .addAction("取消", (dialog, index) -> dialog.dismiss());
         builder.create().show();
     }
 
 
-    private void createProject() {
-        showLoading();
-        RetrofitManager.instance()
-                .request()
-                .createProject(RequestHelper.jsonBody(project))
-                .enqueue(new Callback<String>() {
-                    @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
-                        startActivity(new Intent(SplashActivity.this, ProjectActivity.class).putExtra("project", project));
-                        finish();
-                    }
-
-                    @Override
-                    public void onFailure(Call<String> call, Throwable throwable) {
-                        hideLoading();
-                        DialogHelper.showTipDialog(context, QMUITipDialog.Builder.ICON_TYPE_FAIL, "创建失败：" + throwable);
-                    }
-                });
+    public void onCreateProjectSuccess(Project project) {
+        startActivity(new Intent(SplashActivity.this, ProjectActivity.class)
+                .putExtra("project", project));
+        finish();
     }
 
 
-    private void getProjectList() {
-        showLoading();
-        RetrofitManager.instance()
-                .request()
-                .getProjectList()
-                .enqueue(new StringCallback() {
-                    @Override
-                    public void onSuccess(int code, String msg, String data) {
-                        projects = GsonHelper.gson().fromJson(data, new TypeToken<List<Project>>() {
-                        }.getType());
-                        initProjects();
-                        linkRefresh.setVisibility(View.GONE);
-                        hideLoading();
-                    }
+    public void onGetProjectListSuccess(List<Project> projects) {
+        this.projects = projects;
+        initProjects();
+        linkRefresh.setVisibility(View.GONE);
+    }
 
-                    @Override
-                    public void onFailure(int code, Throwable throwable) {
-                        hideLoading();
-                        DialogHelper.showTipDialog(context, QMUITipDialog.Builder.ICON_TYPE_FAIL, throwable.getMessage());
-                        linkRefresh.setVisibility(View.VISIBLE);
-                    }
-                });
+    public void onGetProjectListFail() {
+        linkRefresh.setVisibility(View.VISIBLE);
+    }
+
+    public void onDeleteProjectSuccess(int index) {
+        projectAdapter.remove(index);
     }
 }

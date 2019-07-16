@@ -16,12 +16,15 @@
             android:layout_width="100dp"
             android:layout_height="440dp" />
 
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/selector_add_click"
-            android:onClick="onAddPageClick"/>
+            android:background="@drawable/selector_btn_normal"
+            android:onClick="onAddPageClick"
+            android:text="添加界面"
+            android:textColor="#ffffff" />
     </LinearLayout>
 
     <LinearLayout
@@ -44,9 +47,9 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="10dp"
-            android:src="@drawable/icon_edit"
+            android:onClick="onEditProjectNameClick"
             android:padding="10dp"
-            android:onClick="onEditProjectNameClick"/>
+            android:src="@drawable/icon_edit" />
     </LinearLayout>
 
     <FrameLayout
@@ -82,46 +85,47 @@
         <Button
             android:layout_width="80dp"
             android:layout_height="40dp"
-            android:textSize="12sp"
             android:layout_marginLeft="10dp"
             android:background="@drawable/selector_btn_normal"
             android:gravity="center"
             android:onClick="onCreateBoxClick"
             android:text="添加框"
-            android:textColor="#ffffff" />
+            android:textColor="#ffffff"
+            android:textSize="12sp" />
 
         <Button
             android:layout_width="80dp"
             android:layout_height="40dp"
-            android:textSize="12sp"
             android:layout_marginLeft="10dp"
             android:background="@drawable/selector_btn_normal"
             android:gravity="center"
             android:onClick="onCreateButtonClick"
             android:text="添加按钮"
-            android:textColor="#ffffff" />
+            android:textColor="#ffffff"
+            android:textSize="12sp" />
 
         <Button
             android:layout_width="80dp"
             android:layout_height="40dp"
-            android:textSize="12sp"
             android:layout_marginLeft="10dp"
             android:background="@drawable/selector_btn_normal"
             android:gravity="center"
             android:onClick="onChoosePictureClick"
             android:text="设置背景"
-            android:textColor="#ffffff" />
+            android:textColor="#ffffff"
+            android:textSize="12sp" />
 
         <Button
+            android:id="@+id/btnSave"
             android:layout_width="80dp"
             android:layout_height="40dp"
-            android:textSize="12sp"
             android:layout_marginLeft="10dp"
             android:background="@drawable/selector_btn_normal"
             android:gravity="center"
             android:onClick="onSavePageClick"
             android:text="保存"
-            android:textColor="#ffffff" />
+            android:textColor="#ffffff"
+            android:textSize="12sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -135,55 +139,55 @@
             android:id="@+id/btnDelete"
             android:layout_width="80dp"
             android:layout_height="40dp"
-            android:textSize="12sp"
             android:background="@drawable/selector_btn_tips"
             android:onClick="onDeleteClick"
             android:text="删除"
-            android:visibility="gone"
-            android:textColor="#ffffff"/>
+            android:textColor="#ffffff"
+            android:textSize="12sp"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/btnGroup"
             android:layout_width="80dp"
             android:layout_height="40dp"
-            android:textSize="12sp"
             android:layout_marginTop="10dp"
             android:background="@drawable/selector_btn_tips"
             android:onClick="onGroupClick"
             android:text="创建组"
-            android:visibility="gone"
-            android:textColor="#ffffff"/>
+            android:textColor="#ffffff"
+            android:textSize="12sp"
+            android:visibility="gone" />
 
         <ToggleButton
             android:id="@+id/switchChoose"
             android:layout_width="80dp"
             android:layout_height="40dp"
-            android:textSize="12sp"
             android:layout_marginTop="10dp"
             android:background="@drawable/selector_btn_tips"
+            android:textColor="#ffffff"
             android:textOff="编辑"
             android:textOn="隐藏"
-            android:textColor="#ffffff"/>
+            android:textSize="12sp" />
 
         <ToggleButton
             android:id="@+id/switchInfo"
             android:layout_width="80dp"
             android:layout_height="40dp"
-            android:textSize="12sp"
             android:layout_marginTop="10dp"
-            android:textOn="关闭详情"
-            android:textOff="显示详情"
+            android:background="@drawable/selector_btn_tips"
             android:textColor="#ffffff"
-            android:background="@drawable/selector_btn_tips"/>
+            android:textOff="显示详情"
+            android:textOn="关闭详情"
+            android:textSize="12sp" />
 
         <Button
             android:layout_width="80dp"
             android:layout_height="40dp"
-            android:textSize="12sp"
             android:layout_marginTop="10dp"
             android:background="@drawable/selector_btn_warn"
             android:onClick="onCloseProjectClick"
             android:text="退出"
-            android:textColor="#ffffff"/>
+            android:textColor="#ffffff"
+            android:textSize="12sp" />
     </LinearLayout>
 </FrameLayout>

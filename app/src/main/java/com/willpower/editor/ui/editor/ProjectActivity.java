@@ -37,13 +37,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectActivity extends BaseTakePhotoActivity<ProjectPresenter> {
+public class ProjectActivity extends BaseTakePhotoActivity<ProjectPresenter> implements BaseView.OnChangeListener {
     private FrameLayout editorLayout;
     private ImageView imgEditorBackground;
     private RecyclerView rvPageList;
     private LinearLayout consoleLayout;
     private TextView tvProjectName;
-    private Button btnGroup, btnDelete;
+    private Button btnGroup, btnDelete, btnSave;
     private ToggleButton switchInfo, switchChoose;
 
     /*
@@ -96,6 +96,7 @@ public class ProjectActivity extends BaseTakePhotoActivity<ProjectPresenter> {
         switchChoose = findViewById(R.id.switchChoose);
         btnGroup = findViewById(R.id.btnGroup);
         btnDelete = findViewById(R.id.btnDelete);
+        btnSave = findViewById(R.id.btnSave);
 
         switchChoose.setOnCheckedChangeListener(chooseListener);
         switchInfo.setOnCheckedChangeListener(infoListener);
@@ -122,6 +123,10 @@ public class ProjectActivity extends BaseTakePhotoActivity<ProjectPresenter> {
                     showPageNameDialog(pageAdapter.getData().get(position).getPageName(), position);
                     break;
             }
+        });
+        pageAdapter.setOnItemChildLongClickListener((adapter, view, position) -> {
+            showDeletePageDialog(position, temProject.getProjectId(), pageAdapter.getData(position).getPageId());
+            return false;
         });
         mPresenter.getProjectInfo(temProject.getProjectId());
     }
@@ -210,6 +215,7 @@ public class ProjectActivity extends BaseTakePhotoActivity<ProjectPresenter> {
     给BaseView绑定事件
      */
     private void bindListener(BaseView view) {
+        view.setChangeListener(this);
         view.setListener((isLong, v) -> {
             if (view.isChooseMode()) {
                 view.setChoosed(!view.isChoosed());
@@ -235,6 +241,21 @@ public class ProjectActivity extends BaseTakePhotoActivity<ProjectPresenter> {
             consoleLayout.setVisibility(View.VISIBLE);
             editorLayout.setVisibility(View.VISIBLE);
         }
+    }
+
+    /*
+    删除
+     */
+    private void showDeletePageDialog(int index, long projectId, long pageId) {
+        dialog = new QMUIDialog.MessageDialogBuilder(context)
+                .setTitle("警告")
+                .setMessage("确认删除界面 <" + pageAdapter.getData(index).getPageName() + "> ?")
+                .addAction(0, "删除", QMUIDialogAction.ACTION_PROP_NEGATIVE, (dialog, index1) -> {
+                    mPresenter.deletePage(index, projectId, pageId);
+                    dialog.dismiss();
+                })
+                .addAction("取消", (dialog, index12) -> dialog.dismiss())
+                .show();
     }
 
     /*
@@ -362,6 +383,13 @@ public class ProjectActivity extends BaseTakePhotoActivity<ProjectPresenter> {
         temProject.setPages(pageAdapter.getData());
     }
 
+    public void onDeletePageSuccess(int index) {
+        pageAdapter.remove(index);
+        tempPage = pageAdapter.getCurrentData();
+        temProject.setPages(pageAdapter.getData());
+        refreshPage();
+    }
+
     public void onGetProjectInfoSuccess(Project project) {
         this.temProject = project;
         pageAdapter.setNewData(project.getPages());
@@ -376,7 +404,12 @@ public class ProjectActivity extends BaseTakePhotoActivity<ProjectPresenter> {
         refreshPage();
     }
 
+    public void onUpdatePageSuccess() {
+        btnSave.setBackground(getResources().getDrawable(R.drawable.selector_btn_normal));
+    }
+
     public void onAddPageSuccess() {
+        btnSave.setBackground(getResources().getDrawable(R.drawable.selector_btn_normal));
         pageAdapter.addData(tempPage);
         pageAdapter.setCurrentPosition(pageAdapter.getItemCount() - 1);
         refreshPage();
@@ -440,7 +473,7 @@ public class ProjectActivity extends BaseTakePhotoActivity<ProjectPresenter> {
                 .setPlaceholder("请输入新的项目名称")
                 .addAction("修改", (dialog, index) -> {
                     CharSequence sequence = builder.getEditText().getText();
-                    if (ValidUtils.isEmpty(sequence)){
+                    if (ValidUtils.isEmpty(sequence)) {
                         showToast("项目名称不能为空！");
                         return;
                     }
@@ -529,7 +562,7 @@ public class ProjectActivity extends BaseTakePhotoActivity<ProjectPresenter> {
         dialog = new QMUIDialog.MessageDialogBuilder(context).
                 setMessage("确定删除选中框？")
                 .setTitle("提示")
-                .addAction(R.drawable.icon_delete, "删除", QMUIDialogAction.ACTION_PROP_NEGATIVE, (dialog, index) -> {
+                .addAction(0, "删除", QMUIDialogAction.ACTION_PROP_NEGATIVE, (dialog, index) -> {
                     List<BaseView> views = new ArrayList<>();
                     for (int i = 0; i < editorLayout.getChildCount(); i++) {
                         BaseView view = (BaseView) editorLayout.getChildAt(i);
@@ -558,5 +591,10 @@ public class ProjectActivity extends BaseTakePhotoActivity<ProjectPresenter> {
     @Override
     public void onBackPressed() {
         mPresenter.exitApplication(tempPage);
+    }
+
+    @Override
+    public void onChange() {
+        btnSave.setBackground(getResources().getDrawable(R.drawable.selector_btn_warn));
     }
 }

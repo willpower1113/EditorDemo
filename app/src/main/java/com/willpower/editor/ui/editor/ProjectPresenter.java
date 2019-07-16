@@ -105,6 +105,8 @@ public class ProjectPresenter extends BasePresenter<ProjectActivity> {
                     getIView().hideLoading();
                     if (isAddPage) {
                         getIView().addPage();
+                    }else {
+                        getIView().onUpdatePageSuccess();
                     }
                 }
             }
@@ -163,6 +165,31 @@ public class ProjectPresenter extends BasePresenter<ProjectActivity> {
             }
         });
     }
+
+    /**
+     * 删除页面
+     */
+    public void deletePage(int index,long projectId, long pageId) {
+        getIView().showLoading();
+        addEnqueue(RetrofitManager.instance().request().deletePage(projectId,pageId), new StringCallback() {
+            @Override
+            public void onSuccess(int code, String msg, String data) {
+                if (getIView() != null) {
+                    getIView().onDeletePageSuccess(index);
+                    getIView().hideLoading();
+                }
+            }
+
+            @Override
+            public void onFailure(int code, Throwable throwable) {
+                if (getIView() != null) {
+                    getIView().showTips(QMUITipDialog.Builder.ICON_TYPE_FAIL, throwable.getMessage());
+                    getIView().hideLoading();
+                }
+            }
+        });
+    }
+
 
     /**
      * 获取页面列表

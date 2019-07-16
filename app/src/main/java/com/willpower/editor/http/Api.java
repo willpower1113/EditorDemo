@@ -15,7 +15,7 @@ import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 
 public interface Api {
-    String baseUrl = "http://192.168.1.155:5888/";
+    String baseUrl = "http://192.168.1.156:5888/";
 
     //获取项目列表
     @POST("editor/getProjectList")
@@ -36,6 +36,14 @@ public interface Api {
     //更新页面
     @POST("editor/updatePage")
     Call<String> updatePage(@Body RequestBody requestBody);
+
+    //删除页面
+    @POST("editor/deletePage")
+    Call<String> deletePage(@Query("projectId") long projectId,@Query("pageId") long pageId);
+
+    //删除页面
+    @POST("editor/deleteProject")
+    Call<String> deleteProject(@Query("projectId") long projectId);
 
     //新增Frame
     @POST("editor/addFrame")

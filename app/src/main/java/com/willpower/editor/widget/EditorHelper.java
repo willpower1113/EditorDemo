@@ -55,7 +55,6 @@ public class EditorHelper {
         if (t > (b - (2 * nearBy))) {
             t = b - (2 * nearBy);
         }
-//        return new Rect(Math.round(l), Math.round(t), Math.round(r), Math.round(b));
         return new Rect(l, t, r, b);
     }
 
